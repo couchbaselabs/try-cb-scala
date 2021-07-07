@@ -82,14 +82,14 @@ image. You may still use Docker to run the Database and Frontend components if d
 Please ensure that you have the following before proceeding.
 
 * Java 8 or later (Java 11 recommended)
-* Maven 3 or later
+* SBT
 
-Install the dependencies:
+Edit `conf/application.conf` and change the Couchbase configuration to match your own.
 
-    mvn clean install
+Compile the application into a single 'fatjar' and run it:
 
-Note that `spring-boot-devtools` is installed as a dependency, so you can run the server with
-the benefit of automatic restarting as you make changes.
+    sbt assembly
+    java -jar target/scala-2.12/try-cb-scala-assembly-1.0-SNAPSHOT.jar
 
 The first time you run against a new database image, you may want to use the provided
 `wait-for-couchbase.sh` wrapper to ensure that all indexes are created.
@@ -99,14 +99,8 @@ For example, using the Docker image provided:
 
     export CB_HOST=localhost CB_USER=Administrator CB_PSWD=password
     ./wait-for-couchbase.sh echo "Couchbase is ready!"
-    
-    mvn spring-boot:run -Dspring-boot.run.arguments="--storage.host=$CB_HOST storage.username=$CB_USER storage.password=$CB_PSWD"
 
-If you already have an existing Couchbase server running and correctly configured, you might run:
-
-    mvn spring-boot:run -Dspring-boot.run.arguments="--storage.host=localhost storage.username=Administrator storage.password=password"
-
-Finally, if you want to see how the sample frontend Vue application works with your changes,
+If you want to see how the sample frontend Vue application works with your changes,
 run it with:
 
     docker-compose -f mix-and-match.yml up frontend
