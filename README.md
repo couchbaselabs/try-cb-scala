@@ -8,8 +8,6 @@ The application is a flight planner that allows the user to search for and selec
 Airport selection is done dynamically using an autocomplete box bound to N1QL queries on the server side. After selecting a date, it then searches
 for applicable air flight routes from a previously populated database. An additional page allows users to search for Hotels using less structured keywords.
 
-![Application](app.png)
-
 
 ## Prerequisites
 
@@ -34,11 +32,6 @@ To launch the full application, simply run this command from a terminal:
 > **_NOTE:_** When you run the application for the first time, it will pull/build the relevant docker images, so it might take a bit of time.
 
 This will start the Scala Play backend, Couchbase Server 7.0.0-beta and the Vue frontend app.
-
-```
-❯ docker-compose up
-...
-```
 
 You should then be able to browse the UI, search for US airports and get flight
 route information.
