@@ -1,0 +1,14 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# Note there is no '/' or static handler as this is purely a REST server.
+
+GET         /api/airports                                      controllers.ApiController.airports
+GET         /api/flightPaths/:fromLoc/:toLoc                   controllers.ApiController.flightPaths(fromLoc, toLoc)
+GET         /api/hotels/:description/:location/                controllers.ApiController.hotels(location, description)
+POST        /api/tenants/:tenant/user/login                    controllers.ApiController.login(tenant)
+POST        /api/tenants/:tenant/user/signup                   controllers.ApiController.signup(tenant)
+GET         /api/tenants/:tenant/user/:username/flights        controllers.ApiController.flights(tenant, username)
+PUT         /api/tenants/:tenant/user/:username/flights        controllers.ApiController.bookFlight(tenant, username)
