@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # wait-for-couchbase.sh
 
 set -e

@@ -9,9 +9,13 @@ services:
       - CB_HOST
       - CB_USER
       - CB_PSWD
-    command: --storage.host=${CB_HOST} --storage.username=${CB_USER} --storage.password=${CB_PSWD}
-    volumes:
-      - .:/app
+    entrypoint: ["./wait-for-couchbase.sh"]
+    command: ["java",
+              "-Dcouchbase.host=${CB_HOST}",
+              "-Dcouchbase.username=${CB_USER}",
+              "-Dcouchbase.password=${CB_PSWD}",
+              "-jar",
+              "try-cb-scala-assembly-1.0-SNAPSHOT.jar"]
     container_name: try-cb-api-mm
 
   frontend:
