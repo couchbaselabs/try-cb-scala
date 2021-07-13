@@ -23,7 +23,7 @@ but you can also run it in a Mix-and-Match style, which we'll decribe below.
 
 ## Running the application with Docker
 
-You will need [Docker](https://docs.docker.com/get-docker/) installed on your machine in order to run this application as we have defined a [_Dockerfile_](Dockerfile) and a [_docker-compose.yml_](docker-compose.yml) to run Couchbase Server 7.0.0 beta, the front-end [Vue app](https://github.com/couchbaselabs/try-cb-frontend-v2.git) and the Scala REST API.
+You will need [Docker](https://docs.docker.com/get-docker/) installed on your machine in order to run this application as we have defined a [_Dockerfile_](Dockerfile) and a [_docker-compose.yml_](docker-compose.yml) to run Couchbase Server 7.0.0, the front-end [Vue app](https://github.com/couchbaselabs/try-cb-frontend-v2.git) and the Scala REST API.
 
 To launch the full application, simply run this command from a terminal:
 
@@ -31,7 +31,7 @@ To launch the full application, simply run this command from a terminal:
 
 > **_NOTE:_** When you run the application for the first time, it will pull/build the relevant docker images, so it might take a bit of time.
 
-This will start the Scala Play backend, Couchbase Server 7.0.0-beta and the Vue frontend app.
+This will start the Scala Play backend, Couchbase Server 7.0.0 and the Vue frontend app.
 
 You should then be able to browse the UI, search for US airports and get flight
 route information.
@@ -52,7 +52,7 @@ alternative `mix-and-match.yml`. We'll look at a few useful scenarios here.
 ### Bring your own database
 
 If you wish to run this application against your own configuration of Couchbase
-Server, you will need version 7.0.0 beta or later with the `travel-sample`
+Server, you will need version 7.0.0 or later with the `travel-sample`
 bucket setup.
 
 > **_NOTE:_** If you are not using Docker to start up the API server, or the
@@ -84,21 +84,28 @@ Please ensure that you have the following before proceeding.
 * Java 8 or later (Java 11 recommended)
 * SBT
 
-Edit `conf/application.conf` and change the Couchbase configuration to match your own.
+There is some Couchbase preparation required, including installing the `travel-sample` bucket, and a required Full Text Search index (in `fts-hotels.index.json`).
+You can run the provided `wait-for-couchbase.sh` script to take care of this, after setting the CB_HOST, CB_USER and CB_PSWD environment variables to point to your Couchbase cluster.  E.g.
+
+    export CB_HOST=localhost CB_USER=Administrator CB_PSWD=password
+    ./wait-for-couchbase.sh
+
+Now, edit `conf/application.conf` and change the Couchbase configuration to point at your cluster.
+Specifically this field `couchbase.host`, and possibly `couchbase.username` and `couchbase.password` if you are following the best practice of setting up a non-Administrator user for data reads and writes.
+They should match the CB_HOST, CB_USER and CB_PSWD environment variables, if you used the wait-for-couchbase.sh script.
 
 Compile the application into a single 'fatjar' and run it:
 
     sbt assembly
     java -jar target/scala-2.12/try-cb-scala-assembly-1.0-SNAPSHOT.jar
 
-The first time you run against a new database image, you may want to use the provided
-`wait-for-couchbase.sh` wrapper to ensure that all indexes are created.
-For example, using the Docker image provided:
+The Scala play backend is now running, on http://localhost:8080/.  Navigating to this page in the browser will show:
 
-    docker-compose -f mix-and-match.yml up db
+    Congratulations, the Couchbase Scala SDK backend for the travel sample application is now running.
 
-    export CB_HOST=localhost CB_USER=Administrator CB_PSWD=password
-    ./wait-for-couchbase.sh echo "Couchbase is ready!"
+It is now ready to be used by the frontend.
+
+As an alternative to building and running on the command-line, you can also open this SBT project inside an IDE such as Jetbrains IntelliJ, and create and execute a 'Play 2 App' config to build and run.
 
 If you want to see how the sample frontend Vue application works with your changes,
 run it with:
