@@ -82,14 +82,17 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
 
     usersCollection.get(username)
       .map(user => {
-        val userData = user.contentAs[JsValue].asInstanceOf[JsObject]
+        val userData = user.contentAs[JsValue].get.asInstanceOf[JsObject]
 
-        val bookedFlights = userData("flights").as[JsArray]
+        val bookedFlights = (userData \ "flights") match {
+          case JsDefined(value) => value.as[JsArray]
+          case JsUndefined() => JsArray()
+        }
         val existingBookedFlightIds: Seq[String] = bookedFlights.value.map(v => v.as[String])
         val newlyBookedFlightIds = ArrayBuffer.empty[String]
         val added = ArrayBuffer.empty[JsObject]
 
-        bookedFlights.value.foreach(flightRaw => {
+        newFlights.value.foreach(flightRaw => {
           val flight = flightRaw.as[JsObject]
           val newFlight = flight ++ Json.obj("bookedon" -> "try-cb-scala")
           val flightId = UUID.randomUUID.toString
@@ -100,8 +103,8 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
 
         val allBookedFlightIds = existingBookedFlightIds ++ newlyBookedFlightIds
 
-        userData ++ Json.obj("flights" -> allBookedFlightIds)
-        usersCollection.upsert(username, userData).get
+        val newUserData = userData ++ Json.obj("flights" -> allBookedFlightIds)
+        usersCollection.upsert(username, newUserData).get
 
         BookFlightResult(Seq(s"KV update - scoped to ${tenant}.user: for bookings field in document %s"), JsArray(added))
       })
@@ -113,15 +116,18 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
 
     usersCollection.get(username)
       .flatMap(user => {
-        val userData = user.contentAs[JsValue].asInstanceOf[JsObject]
+        val userData = user.contentAs[JsValue].get.asInstanceOf[JsObject]
 
-        val existingFlights = userData("flights").as[JsArray]
+        val existingFlights = (userData \ "flights") match {
+          case JsDefined(value) => value.as[JsArray]
+          case JsUndefined() => JsArray()
+        }
 
         val x: SMono[Seq[JsObject]] = SFlux.fromIterable(existingFlights.value)
           .flatMap(flight => {
             val flightId = flight.as[String]
             bookingsCollection.get(flightId)
-              .map(r => r.contentAs[JsValue].asInstanceOf[JsObject])
+              .map(r => r.contentAs[JsValue].get.asInstanceOf[JsObject])
           })
           .collectSeq()
 

@@ -1,18 +1,13 @@
 package controllers
 
-import com.couchbase.client.scala.json.JsonObject
-import com.couchbase.client.scala.query.{QueryOptions, QueryParameters, QueryResult}
-import components.CouchbaseConnection
-import play.api.libs.json.{JsArray, JsObject, JsValue, Json, OWrites, Writes}
+import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc._
-import reactor.core.scala.publisher.SFlux
-import services.{AirportService, AirportsResult, BookFlightResult, FlightPathService, Hotel, HotelsService, TenantService, TokenService}
+import services._
 
+import java.text.DateFormat
+import java.util.{Calendar, Locale}
 import javax.inject._
 import scala.util.{Failure, Success, Try}
-import java.text.DateFormat
-import java.util.Calendar
-import java.util.Locale
 
 /** Handle any requests to the '/api' endpoint.  In a production application you'd likely want one controller for
  * flights, airports, hotels etc., but given the limited number of endpoints we combine them here.
