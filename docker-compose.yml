@@ -23,7 +23,11 @@ services:
     ports:
       - "8091-8095:8091-8095"
       - "11210:11210"
-    expose: # expose ports 8091 & 8094 to other containers (mainly for backend)
+    expose:
       - "8091"
+      - "8092"
+      - "8093"
       - "8094"
-    container_name: couchbase-sandbox-7.0.0-beta
+      - "8095"
+      - "11210"
+    container_name: try-cb-db
