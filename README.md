@@ -29,7 +29,9 @@ To launch the full application, simply run this command from a terminal:
 
     docker-compose up
 
-> **_NOTE:_** When you run the application for the first time, it will pull/build the relevant docker images, so it might take a bit of time.
+> **_NOTE:_** You may need more than the default RAM to run the images.
+We have tested the travel-sample apps with 4.5 GB RAM configured in Docker's Preferences... -> Resources -> Memory.
+When you run the application for the first time, it will pull/build the relevant docker images, so it might take a bit of time.
 
 This will start the Scala Play backend, Couchbase Server 7.0.0 and the Vue frontend app.
 
