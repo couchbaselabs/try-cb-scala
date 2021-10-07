@@ -51,8 +51,8 @@ class ApiController @Inject()(val controllerComponents: ControllerComponents,
     val password = json("password").as[String]
 
     tenantService.signup(tenant, username, password) match {
-      case Success(v) => Ok(Json.toJson(v))
-      case Failure(err) => InternalServerError(err.getMessage)
+      case Success(v) => Created(Json.toJson(v))
+      case Failure(err) => Conflict(err.getMessage)
     }
   }
 
