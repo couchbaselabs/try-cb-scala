@@ -106,7 +106,7 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
         val newUserData = userData ++ Json.obj("flights" -> allBookedFlightIds)
         usersCollection.upsert(username, newUserData).get
 
-        BookFlightResult(Seq(s"KV update - scoped to ${tenant}.user: for bookings field in document %s"), JsArray(added))
+        BookFlightResult(Seq(s"KV update - scoped to ${tenant}.users: for bookings field in document %s"), JsArray(added))
       })
   }
 
@@ -136,7 +136,7 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
         val flights: Try[JsArray] = Try(x.block())
           .map(flights => JsArray(flights))
 
-        flights.map(f => BookFlightResult(Seq(s"KV get - scoped to ${tenant}.user: for ${f.value.length} bookings in document ${username}"), f))
+        flights.map(f => BookFlightResult(Seq(s"KV get - scoped to ${tenant}.users: for ${f.value.length} bookings in document ${username}"), f))
       })
   }
 }
