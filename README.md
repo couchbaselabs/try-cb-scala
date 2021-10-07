@@ -83,7 +83,7 @@ image. You may still use Docker to run the Database and Frontend components if d
 
 Please ensure that you have the following before proceeding.
 
-* Java 8 or later (Java 11 recommended)
+* Java (Java 11 LTS is recommended. Versions from Java 8+ should work, but note that the recently released Java 17 LTS is not yet supported by the Play framework)
 * SBT
 
 There is some Couchbase preparation required, including installing the `travel-sample` bucket, and a required Full Text Search index (in `fts-hotels.index.json`).
