@@ -119,6 +119,21 @@ run it with:
 To run the frontend components manually without Docker, follow the guide
 [here](https://github.com/couchbaselabs/try-cb-frontend-v2)
 
+## Running the tests.
+
+All the travel-sample apps conform to the same interface, which means that they can all be used with the same database configuration and Vue.js frontend.
+
+To ensure that every app conforms to the API, we have a [test suite][try-cb-test], which you can simply run with the command:
+
+```
+docker-compose --profile test up test
+```
+
+If you are running locally though, with a view to extending or modifying the travel-sample app, you will likely want to be able to make changes to both the code and the tests in parallel.
+
+ * Start the backend server locally, for example using "Running the Scala API application manually" above.
+ * Check out the [test suite][try-cb-test] repo in a separate working directory, and run the tests manually, as per the instructions.
+ 
 [Couchbase Server]: https://www.couchbase.com/
 [Scala SDK]: https://docs.couchbase.com/scala-sdk/current/hello-world/overview.html
 [Spring Boot]: https://spring.io/projects/spring-boot
@@ -126,3 +141,4 @@ To run the frontend components manually without Docker, follow the guide
 [Swagger]: https://swagger.io/resources/open-api/
 [Vue]: https://vuejs.org/
 [Bootstrap]: https://getbootstrap.com/
+[try-cb-test]: https://github.com/couchbaselabs/try-cb-test/
