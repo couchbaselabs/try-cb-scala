@@ -85,7 +85,7 @@ class ApiController @Inject()(val controllerComponents: ControllerComponents,
   def flights(tenant: String, username: String) = Action { implicit request =>
     val authHeader = Try(request.headers.get("Authorization").get)
 
-    val result: Try[BookFlightResult] = authHeader.flatMap(ah =>
+    val result: Try[FlightsResult] = authHeader.flatMap(ah =>
       tokenService.verifyAuthenticationHeader(ah, username))
       .flatMap(_ => tenantService.getFlights(tenant, username))
 
