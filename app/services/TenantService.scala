@@ -19,7 +19,8 @@ class AuthenticationNotFoundException extends RuntimeException {
   override def getMessage: String = "Bad username or password"
 }
 
-case class BookFlightResult(context: Seq[String], data: JsArray)
+case class BookFlightResult(context: Seq[String], data: JsObject)
+case class FlightsResult(context: Seq[String], data: JsArray)
 
 object AuthToken {
   implicit val playCodec: OWrites[AuthToken] = Json.writes[AuthToken]
@@ -31,6 +32,10 @@ object AuthResult {
 
 object BookFlightResult {
   implicit val playCodec: OWrites[BookFlightResult] = Json.writes[BookFlightResult]
+}
+
+object FlightsResult {
+  implicit val playCodec: OWrites[FlightsResult] = Json.writes[FlightsResult]
 }
 
 class TenantService @Inject()(val couchbase: CouchbaseConnection,
@@ -106,11 +111,13 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
         val newUserData = userData ++ Json.obj("flights" -> allBookedFlightIds)
         usersCollection.upsert(username, newUserData).get
 
-        BookFlightResult(Seq(s"KV update - scoped to ${tenant}.user: for bookings field in document %s"), JsArray(added))
+        BookFlightResult(
+          Seq(s"KV update - scoped to ${tenant}.users: for bookings field in document %s"), 
+          Json.obj("added" -> JsArray(added)))
       })
   }
 
-  def getFlights(tenant: String, username: String): Try[BookFlightResult] = {
+  def getFlights(tenant: String, username: String): Try[FlightsResult] = {
     val usersCollection = couchbase.bucket.scope(tenant).collection("users")
     val bookingsCollection = couchbase.bucket.scope(tenant).collection("bookings").reactive
 
@@ -136,7 +143,7 @@ class TenantService @Inject()(val couchbase: CouchbaseConnection,
         val flights: Try[JsArray] = Try(x.block())
           .map(flights => JsArray(flights))
 
-        flights.map(f => BookFlightResult(Seq(s"KV get - scoped to ${tenant}.user: for ${f.value.length} bookings in document ${username}"), f))
+        flights.map(f => FlightsResult(Seq(s"KV get - scoped to ${tenant}.users: for ${f.value.length} bookings in document ${username}"), f))
       })
   }
 }
